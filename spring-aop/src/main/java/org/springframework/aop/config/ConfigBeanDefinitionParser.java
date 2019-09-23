@@ -96,21 +96,29 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	private ParseState parseState = new ParseState();
 
 
+	/**
+	 * 解析<aop:config></aop:config>
+	 */
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		CompositeComponentDefinition compositeDef =
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element));
 		parserContext.pushContainingComponent(compositeDef);
-
+		// 是否生成代理类
 		configureAutoProxyCreator(parserContext, element);
 
 		List<Element> childElts = DomUtils.getChildElements(element);
 		for (Element elt: childElts) {
 			String localName = parserContext.getDelegate().getLocalName(elt);
+			// pointcut解析是生成一个beanDefinition并将其id，expression等属性保存在BeanDefinition中,注意：
+			// 1.BeanDefinition的ID来自于id属性，如果没有，那么自动生成。
+			// 2.BeanDefinition的class是AspectJExpressionPointcut。
+			// 3/BeanDefinition的scope为prototype。
 			if (POINTCUT.equals(localName)) {
 				parsePointcut(elt, parserContext);
 			}
+			// 解析增强
 			else if (ADVISOR.equals(localName)) {
 				parseAdvisor(elt, parserContext);
 			}
@@ -430,6 +438,12 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	}
 
 	/**
+	 * pointcut解析是生成一个beanDefinition并将其id，expression等属性保存在BeanDefinition中,注意：
+	 * 	1.BeanDefinition的ID来自于id属性，如果没有，那么自动生成。
+	 * 	2.BeanDefinition的class是AspectJExpressionPointcut。
+	 * 	3.BeanDefinition的scope为prototype。
+	 *
+	 *
 	 * Parses the supplied {@code <pointcut>} and registers the resulting
 	 * Pointcut with the BeanDefinitionRegistry.
 	 */
