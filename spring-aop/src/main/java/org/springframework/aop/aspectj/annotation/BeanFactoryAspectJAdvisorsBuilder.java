@@ -74,6 +74,10 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 
 
 	/**
+	 * 1 从beanFactory中获取所有的beanName
+	 * 2 遍历所有的beanName，并找出申明了AspectJ注解的类
+	 * 3 对标记为AspectJ注解的类进行增强的提取
+	 * 4 将提取结果加入缓存
 	 * Look for AspectJ-annotated aspect beans in the current bean factory,
 	 * and return to a list of Spring AOP Advisors representing them.
 	 * <p>Creates a Spring Advisor for each AspectJ advice method.
@@ -107,6 +111,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
+								//解析标记AspectJ注解的增强方法
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);

@@ -67,7 +67,9 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		this.advisorRetrievalHelper = new BeanFactoryAdvisorRetrievalHelperAdapter(beanFactory);
 	}
 
-
+	/**
+	 * 获取增强方法
+	 */
 	@Override
 	@Nullable
 	protected Object[] getAdvicesAndAdvisorsForBean(
@@ -81,6 +83,8 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	}
 
 	/**
+	 * 1.获取所有的增强
+	 * 2.寻找所有增强中适用于bean的增强并应用
 	 * Find all eligible Advisors for auto-proxying this class.
 	 * @param beanClass the clazz to find advisors for
 	 * @param beanName the name of the currently proxied bean
@@ -91,7 +95,9 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #extendAdvisors
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
+		// 获取所有的增强,有两种实现，一种基于注解的aop，一种是基于配置文件的
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
+		// 寻找所有增强中适用于bean的增强并应用
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {

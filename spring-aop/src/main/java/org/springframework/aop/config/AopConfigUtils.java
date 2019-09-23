@@ -114,6 +114,7 @@ public abstract class AopConfigUtils {
 		}
 	}
 
+	//注册或者升级自动代理生成器
 	@Nullable
 	private static BeanDefinition registerOrEscalateApcAsRequired(
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
